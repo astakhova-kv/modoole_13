@@ -29,7 +29,6 @@ async def set_age(message):
 @dp.message_handler(state=UserState.age)
 async def set_growth(message, state):
     await state.update_data(age=message.text)
-    age = await state.get_data()
     await message.answer('Введите свой рост:')
     await UserState.growth.set()
 
@@ -37,7 +36,6 @@ async def set_growth(message, state):
 @dp.message_handler(state=UserState.growth)
 async def set_weight(message, state):
     await state.update_data(growth=message.text)
-    growth = await state.get_data()
     await message.answer('Введите свой вес:')
     await UserState.weight.set()
 
@@ -45,7 +43,6 @@ async def set_weight(message, state):
 @dp.message_handler(state=UserState.weight)
 async def set_calories(message, state):
     await state.update_data(weight=message.text)
-    weight = await state.get_data()
     data = await state.get_data()
     resoult = 10 * int(data['weight']) + 6.25 * int(data['growth']) + 5 * int(data['age']) - 161
     await message.answer(f'Ваше количество калорий для сохранения нормального веса {resoult}')
