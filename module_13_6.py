@@ -19,8 +19,8 @@ kb_1.insert(bt_2)
 kb_2 = InlineKeyboardMarkup(resize_keyboard=True)
 bt_3 = InlineKeyboardButton(text='Рассчитать норму калорий', callback_data='calories')
 bt_4 = InlineKeyboardButton(text='Формулы расчёта', callback_data='formulas')
-kb_2.add(bt_3)
-kb_2.add(bt_4)
+kb_2.insert(bt_3)
+kb_2.insert(bt_4)
 
 
 class UserState(StatesGroup):
@@ -46,7 +46,8 @@ async def main_menu(message):
 
 @dp.callback_query_handler(text='formulas')
 async def get_formulas(call):
-    await call.message.answer('для женщин: 10 x вес (кг) + 6,25 x рост (см) – 5 x возраст (г) – 161')
+    await call.message.answer('''для мужчин: 10 х вес (кг) + 6,25 x рост (см) – 5 х возраст (г) + 5;
+для женщин: 10 x вес (кг) + 6,25 x рост (см) – 5 x возраст (г) – 161.''')
     await call.answer()
 
 
@@ -54,6 +55,7 @@ async def get_formulas(call):
 async def set_age(call):
     await call.message.answer('Введите свой возраст:')
     await UserState.age.set()
+    await call.answer()
 
 
 @dp.message_handler(state=UserState.age)
@@ -74,8 +76,8 @@ async def set_weight(message, state):
 async def set_calories(message, state):
     await state.update_data(weight=message.text)
     data = await state.get_data()
-    resoult = 10 * int(data['weight']) + 6.25 * int(data['growth']) + 5 * int(data['age']) - 161
-    await message.answer(f'Ваше количество калорий для сохранения нормального веса {resoult}')
+    resoult = 10 * int(data['weight']) + 6.25 * int(data['growth']) - 5 * int(data['age']) - 161
+    await message.answer(f'Ваша норма калорий {resoult}')
     await state.finish()
 
 
